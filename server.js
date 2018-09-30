@@ -8,6 +8,13 @@ let messages = [
   { id: 3, user: 'lorem ipsum', message: 'dolor set amet' }
 ];
 
+const addMessage = (newMessage, response) => {
+  response.writeHead(201, { 'Content-Type': 'application/json' });
+  response.write(JSON.stringify(newMessage));
+  messages.push(newMessage);
+  response.end();
+};
+
 const getAllMessages = response => {
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.write(JSON.stringify(messages));
@@ -22,7 +29,11 @@ server.on('request', (request, response) => {
   if (request.method === 'GET') {
     getAllMessages(response);
   } else if (request.method === 'POST') {
-    let newMessage = { id: new Date() };
+    let newMessage = {
+      id: messages.length + 1,
+      user: 'alex trebek',
+      message: 'answer in the form of a question'
+    };
 
     request.on('data', data => {
       newMessage = Object.assign(newMessage, JSON.parse(data));
